@@ -1,0 +1,110 @@
+@import './base/settings';
+@import './base/base';
+*{
+    margin: 0 0 0 5px;
+    margin-bottom: 3px;
+    // outline: 1px solid red;
+    font-stretch: condensed;
+}
+div{
+
+}
+body {
+    width: 98vw;
+}
+.stats {
+    display: flex;
+    width: 97vw;
+}
+.fixedHeader {
+    position: fixed;
+    z-index: 999;
+    background-color: white;
+    width: 100%;
+    top: 0px;
+    border-bottom: 1.25px solid gray;
+}
+hr {
+    color: black;
+    background-color: black;
+}
+#hoverHelp {
+    position: fixed;
+    top: 10px;
+    right: 2.5rem;
+}
+.firstColumn {
+    display: flex;
+    width: 33vw;
+    flex-wrap: wrap;
+    height: 100px;
+}
+.bettingInfo {
+    display: flex;
+    flex-direction: column;
+    // justify-content: center;
+    align-items: center;
+    width: 3vw;
+    order: 1;
+    font-weight: bolder;
+}
+.horseInfo {
+    display: flex;
+    flex-direction: column;
+    order: 2;
+}
+.horseName {
+    font-size: $l-size;
+    font-weight: bolder;
+}
+.gate {
+    font-size: $xl-size;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+.odds {
+    font-size: 2rem;
+}
+.jockey {
+    order: 3;
+    align-self: flex-end;
+}
+.jockey, .secondColumn {
+    font-weight: bold;
+}
+.horseName, .secondColumn {
+    margin-top: .4rem;
+}
+.secondColumn {
+    width: 28vw;
+}
+.medication {
+    width: 5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+    font-weight: bolder;
+}
+.tableStats {
+    table-layout: auto;
+    width: 16vw;
+    margin-top: -6px;
+    // outline: 1px solid red;
+}
+td {
+    // outline: 1px solid red;
+    text-align: right;
+    font-weight: bold;
+    padding: .59rem 5px;
+}
+td:first-of-type {
+    padding: 0 0 0 5px;
+    text-align: left;
+}
+.tableLife {
+    outline: 1px solid black;
+}
+.conditions > tbody > tr > td {
+    padding: .23rem 5px;
+}
