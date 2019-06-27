@@ -1,21 +1,63 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import NotFoundPage from '../components/NotFoundPage';
-import ExpenseDashboardPage from '../components/ExpenseDashboardPage';
 import Header from '../components/Header';
 import Horse from '../components/Horse';
+import Horse2 from '../components/Horse - Copy';
+import HelpModal from '../components/HelpModal'
+import { HashLink as Link } from 'react-router-hash-link';
+
 
 
 const AppRouter = () => (
     <BrowserRouter>
         <Header />
         <Switch>
-            <Route path='/' component={ExpenseDashboardPage} exact={true} />
+            <Route path='/' component={Horse} exact={true} />
             <Route path='/header' component={Header} />
-            <Route path='/horse' component={Horse} />
             <Route component={NotFoundPage} />
         </Switch>
+        <HelpModal />
     </BrowserRouter>
 );
 
 export default AppRouter;
+
+
+
+// const AppRouter = () => (
+//     <BrowserRouter>
+//         <Header />
+//         <Switch>
+//             <Route path='/' component={Horse} exact={true} />
+//             <Route path='/header' component={Header} />
+//             <Route path='/horse' component={Horse} />
+//             <Route component={NotFoundPage} />
+//         </Switch>
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <a id='7' href='/#7'></a>
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <Horse2 />
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <Horse />
+//         <HelpModal />
+//     </BrowserRouter>
+// );

@@ -1,15 +1,15 @@
 @import './base/settings';
 @import './base/base';
+@import './components/modal';
 *{
-    margin: 0 0 0 5px;
+    margin: 0;
     margin-bottom: 3px;
     // outline: 1px solid red;
     font-stretch: condensed;
-}
-div{
-
+    cursor: default;
 }
 body {
+    margin: 0 0 0 20px;
     width: 98vw;
 }
 .stats {

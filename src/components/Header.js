@@ -3,27 +3,11 @@ import { connect } from 'react-redux';
 import { enableHelp, disableHelp } from '../actions/help';
 
 class Header extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            hoverHelp: props.help.hoverHelp
-        }
-        console.log('props', props.help.test);
-        console.log('state', this.state.hoverHelp);
-    }
-    // toggleHelp = () => {
-    //     let hoverHelp = this.state.hoverHelp;
-    //     this.state.hoverHelp == 'disabled' ? hoverHelp = 'enabled' : hoverHelp = 'disabled';
-    //     this.setState(() => ({ hoverHelp }));
-    //     console.log("Help", hoverHelp);
-    // };
     componentDidMount = () => { //lifecycle only within class based components (cbc)
         try {
             const json = localStorage.getItem('hoverHelp');
             const hoverHelp = JSON.parse(json);
-            if (hoverHelp) {
-                this.setState(() => ({ hoverHelp }));
-            }
+            hoverHelp === 'enabled' ? this.props.dispatch(enableHelp()) : this.props.dispatch(disableHelp());
         }
         catch (e) {
         }
@@ -39,44 +23,46 @@ class Header extends React.Component {
                 document.body.style.paddingTop = 0;
             }
         }
-
         window.addEventListener('scroll', handleScroll);
+        window.addEventListener('keypress', (key) => {
+            key.key === 'h' && this.props.help.hoverHelp == 'enabled' ? this.props.dispatch(disableHelp()) : this.props.dispatch(enableHelp()); // pressing lowercase 's' toggles the hover help feature
+            let scrollTo = document.getElementById(key.key); // pressing race gate number will look for any associated anchors - if they exist it scrolls into center of the screen
+            if(scrollTo){
+                scrollTo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
     }
     componentDidUpdate = (prevProps, prevState) => {
-        console.log('prevProps', prevProps)
-        console.log('prevState', prevState)
-        console.log('this.state.hoverhelp', this.state.hoverHelp);
-        if (prevState.hoverHelp !== this.state.hoverHelp) {
-            console.log('should have changed');
-            const json = JSON.stringify(this.state.hoverHelp);
+        if (prevProps.help.hoverHelp !== this.props.help.hoverHelp) {
+            const json = JSON.stringify(this.props.help.hoverHelp);
             localStorage.setItem('hoverHelp', json);
         }
     }
     render() {
         return (
-                <header id='header'>
-                    <h1>Welcome to the Racetrack</h1>
-                    <button
-                        id='hoverHelp'
-                        value={this.props.help.hoverHelp}
-                        onClick={(e) => {
-                            console.log('target state', e.target.value)
-                            if (e.target.value === 'disabled') {
-                                this.props.dispatch(enableHelp())
-                            }
-                            else if (e.target.value === 'enabled') {
-                                this.props.dispatch(disableHelp())
-                            }
-                        }}
-                    >{this.props.help.hoverHelp == 'enabled' ? 'Disable' : 'Enable'} Hover Help</button>
-                </header>
+            <header id='header'>
+                <h1>Welcome to the Racetrack</h1>
+                <button
+                    id='hoverHelp'
+                    value={this.props.help.hoverHelp}
+                    onClick={(e) => {
+                        if (e.target.value === 'disabled') {
+                            console.log('Enabling')
+                            this.props.dispatch(enableHelp())
+                        }
+                        else if (e.target.value === 'enabled') {
+                            console.log('Disabling')
+                            this.props.dispatch(disableHelp())
+                        }
+                    }}
+                >{this.props.help.hoverHelp == 'enabled' ? 'Disable' : 'Enable'} Hover Help</button>
+            </header>
 
         )
     };
-}
+};
 
 const mapStateToProps = (state) => {
-    console.log('mapping state', state);
     return {
         help: state.help
     };

@@ -2,7 +2,9 @@
 
 const helpReducerDefaultState = {
     hoverHelp: 'enabled',
-    test: 'should see this too'
+    modal: false,
+    helpType: false,
+    
 };
 const helpReducer = (state = helpReducerDefaultState, action) => {
     switch (action.type) {
@@ -15,6 +17,17 @@ const helpReducer = (state = helpReducerDefaultState, action) => {
             return {
                 ...state,
                 hoverHelp: 'disabled'
+            };
+        case 'OPEN_MODAL':
+            return {
+                ...state,
+                helpType: action.helpType,
+                modal: true
+            };
+        case 'CLOSE_MODAL':
+            return {
+                ...state,
+                modal: false
             };
         default:
             return state;

@@ -332,7 +332,7 @@ const TestRideJockey = {
 
 
 
-class Horse extends React.Component {
+class Horse2 extends React.Component {
     state = {
         timer: true,
         targetLeft: null,
@@ -357,7 +357,9 @@ class Horse extends React.Component {
     }
     openModal = () => {
         let type = this.state.targetId;
+        console.log(type);
         for (var i = type.length - 1; i > 0; i--) {
+            console.log(isNaN(type[i]));
             if (isNaN(type[i])) {
                 type = type.substr(0, i + 1);
                 this.props.openModal(type);
@@ -392,7 +394,7 @@ class Horse extends React.Component {
                 <div className='stats' >
                     <div className='firstColumn'>
                         <div className='bettingInfo'>
-                            <p className='gate'>7</p>
+                            <p className='gate'>8<a id='8' href='/#8'></a></p>
                             <p className='odds'>15-1</p>
                         </div>
                         <div className='horseInfo'>
@@ -522,4 +524,4 @@ const mapDispatchToProps = (dispatch) => ({
     closeModal: () => dispatch(closeModal())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Horse);
+export default connect(mapStateToProps, mapDispatchToProps)(Horse2);
