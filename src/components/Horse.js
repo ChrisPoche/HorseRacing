@@ -1,7 +1,9 @@
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
+import { removeHorse } from '../actions/horse';
 import { openModal, closeModal } from '../actions/help';
+
 
 
 const jockeyTemplate = {
@@ -104,7 +106,7 @@ const horseTemplate = {
                 earnings: 62900,
                 bestBeyerSpeed: 84
             },
-            trackConditionStats: {
+            raceConditionStats: {
                 dryFast: {
                     total: 5,
                     wins: 1,
@@ -149,7 +151,7 @@ const horseTemplate = {
                     bestBeyerSpeed: 0
                 }
             },
-            raceHistory: [
+            pastRaceHistory: [
                 {
                     raceDate: moment(20150729),
                     raceNumber: 3,
@@ -174,8 +176,6 @@ const TestRide = {
         description: 'Cerise, Black Coto And White Emblem On',
         logoLocation: ''
     },
-    medication: 'L',
-    projectedWeight: 122,
     pedigree: {
         color: 'Gr/ro.', // B - Bay, Blk - Black, Ch - Chestnut, Dkb - Dark Bay, Br - Brown, Gr - Gray, Ro - Roan
         sex: 'g(09.25.14)', // c - colt, f - filly, g - gelding, h - horse, m - mare, r - ridgling
@@ -242,15 +242,7 @@ const TestRide = {
             earnings: 53900,
             bestBeyerSpeed: 84
         },
-        trackStats: { // this will need to be moved eventually when doing it by track
-            total: 5,
-            wins: 1,
-            place: 1,
-            show: 1,
-            earnings: 62900,
-            bestBeyerSpeed: 84
-        },
-        trackConditionStats: {
+        raceConditionStats: {
             dryFast: {
                 total: 5,
                 wins: 1,
@@ -295,7 +287,7 @@ const TestRide = {
                 bestBeyerSpeed: 0
             }
         },
-        raceHistory: [
+        pastRaceHistory: [
             {
                 raceDate: moment(20150729),
                 raceNumber: 3,
@@ -310,17 +302,38 @@ const TestRide = {
                 }
             }
         ]
+    },
+    trackStats: { // this will need to be moved eventually when doing it by track
+        DMR: {
+            total: 5,
+            wins: 1,
+            place: 1,
+            show: 1,
+            earnings: 62900,
+            bestBeyerSpeed: 84
+        }
+    },
+    currentRace: {
+        track: 'DMR',
+        number: 3,
+        odds: '15-1',
+        gate: '7',
+        medication: 'L',
+        projectedWeight: 122,
+        jockey: '<jockeyId>'
     }
 };
 
 const TestRideJockey = {
     name: 'Nicolas G',
     meetStats: {
-        total: 54,
-        wins: 1,
-        place: 3,
-        show: 4,
-        winPercentage: .02
+        DMR: {
+            total: 54,
+            wins: 1,
+            place: 3,
+            show: 4,
+            winPercentage: .02
+        }
     },
     yearStats: {
         year: 2015,
@@ -330,16 +343,26 @@ const TestRideJockey = {
     }
 };
 
+const raceTrackCodeConversion = {
+    Dmr: 'Del Mar',
+    CD: 'Churchill Downs',
+    SA: 'Santa Anita Park'
+}
+
 
 
 class Horse extends React.Component {
-    state = {
-        timer: true,
-        targetLeft: null,
-        targetTop: null,
-        targetRight: null,
-        targetBottom: null,
-        targetId: null
+    constructor(props) {
+        super(props);
+        this.state = {
+            timer: true,
+            targetLeft: null,
+            targetTop: null,
+            targetRight: null,
+            targetBottom: null,
+            targetId: null,
+            horseId: props.id
+        }
     }
     helpDelay = (fn, action, id) => {
         if (this.props.help.hoverHelp === 'enabled') {
@@ -387,7 +410,7 @@ class Horse extends React.Component {
     }
     render() {
         return (
-            <div>
+            <div >
                 <hr />
                 <div className='stats' >
                     <div className='firstColumn'>
@@ -400,7 +423,7 @@ class Horse extends React.Component {
                             <h4>Own: {TestRide.owner}</h4>
                             <p>{TestRide.silks.description}</p>
                         </div>
-                        <p className='jockey'>{TestRideJockey.name.toUpperCase()} ({TestRideJockey.meetStats.total} {TestRideJockey.meetStats.wins} {TestRideJockey.meetStats.place} {TestRideJockey.meetStats.show} {TestRideJockey.meetStats.winPercentage.toString().substr(1, 3)}) {TestRideJockey.yearStats.year}: ({TestRideJockey.yearStats.total} {TestRideJockey.yearStats.wins} {TestRideJockey.yearStats.winPercentage.toString().substr(1, 3)})</p>
+                        <p className='jockey'>{TestRideJockey.name.toUpperCase()} ({TestRideJockey.meetStats.DMR.total} {TestRideJockey.meetStats.DMR.wins} {TestRideJockey.meetStats.DMR.place} {TestRideJockey.meetStats.DMR.show} {TestRideJockey.meetStats.DMR.winPercentage.toString().substr(1, 3)}) {TestRideJockey.yearStats.year}: ({TestRideJockey.yearStats.total} {TestRideJockey.yearStats.wins} {TestRideJockey.yearStats.winPercentage.toString().substr(1, 3)})</p>
                     </div>
                     <div className='secondColumn'>
                         <p id='horseColor123' onPointerOver={(e) => { this.helpDelay(this.openModal, e.type, e.target.id) }} onPointerLeave={(e) => { this.helpDelay(this.closeModal, e.type, e.target.id) }}>{TestRide.pedigree.color} {TestRide.pedigree.sex} {TestRide.pedigree.age} ({TestRide.pedigree.month}) {TestRide.pedigree.auction.auctionHouse.toUpperCase()}{moment(TestRide.pedigree.auction.date).format('MMMYY').toUpperCase()} ${TestRide.pedigree.auction.price.toLocaleString()}</p>
@@ -410,7 +433,7 @@ class Horse extends React.Component {
                         <p id='horseTrainer' onPointerOver={(e) => { this.helpDelay(this.openModal, e.type, e.target.id) }} onPointerLeave={(e) => { this.helpDelay(this.closeModal, e.type, e.target.id) }}>Tr: {TestRide.pedigree.parents.trainer.name} ({TestRide.pedigree.parents.trainer.meetStats.total} {TestRide.pedigree.parents.trainer.meetStats.wins} {TestRide.pedigree.parents.trainer.meetStats.place} {TestRide.pedigree.parents.trainer.meetStats.show} {TestRide.pedigree.parents.trainer.meetStats.winPercentage.toString().substr(1, 3)}) {TestRide.pedigree.parents.trainer.yearStats.year}: ({TestRide.pedigree.parents.trainer.yearStats.total} {TestRide.pedigree.parents.trainer.yearStats.wins} {TestRide.pedigree.parents.trainer.yearStats.winPercentage.toString().substr(1, 3)})</p>
                     </div>
                     <div className='medication'>
-                        <p>{TestRide.medication} {TestRide.projectedWeight}</p>
+                        <p>{TestRide.currentRace.medication} {TestRide.currentRace.projectedWeight}</p>
                     </div>
                     <div>
                         <table className='tableStats'>
@@ -444,12 +467,12 @@ class Horse extends React.Component {
                                 </tr>
                                 <tr>
                                     <td>Dmr</td>
-                                    <td>{TestRide.stats.trackStats.total}</td>
-                                    <td>{TestRide.stats.trackStats.wins}</td>
-                                    <td>{TestRide.stats.trackStats.place}</td>
-                                    <td>{TestRide.stats.trackStats.show}</td>
-                                    <td>${TestRide.stats.trackStats.earnings.toLocaleString()}</td>
-                                    <td>{TestRide.stats.trackStats.bestBeyerSpeed}</td>
+                                    <td>{TestRide.trackStats.DMR.total}</td>
+                                    <td>{TestRide.trackStats.DMR.wins}</td>
+                                    <td>{TestRide.trackStats.DMR.place}</td>
+                                    <td>{TestRide.trackStats.DMR.show}</td>
+                                    <td>${TestRide.trackStats.DMR.earnings.toLocaleString()}</td>
+                                    <td>{TestRide.trackStats.DMR.bestBeyerSpeed}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -459,48 +482,48 @@ class Horse extends React.Component {
                             <tbody>
                                 <tr>
                                     <td>D.Fst</td>
-                                    <td>{TestRide.stats.trackConditionStats.dryFast.total}</td>
-                                    <td>{TestRide.stats.trackConditionStats.dryFast.wins}</td>
-                                    <td>{TestRide.stats.trackConditionStats.dryFast.place}</td>
-                                    <td>{TestRide.stats.trackConditionStats.dryFast.show}</td>
-                                    <td>${TestRide.stats.trackConditionStats.dryFast.earnings.toLocaleString()}</td>
-                                    <td>{TestRide.stats.trackConditionStats.dryFast.bestBeyerSpeed}</td>
+                                    <td>{TestRide.stats.raceConditionStats.dryFast.total}</td>
+                                    <td>{TestRide.stats.raceConditionStats.dryFast.wins}</td>
+                                    <td>{TestRide.stats.raceConditionStats.dryFast.place}</td>
+                                    <td>{TestRide.stats.raceConditionStats.dryFast.show}</td>
+                                    <td>${TestRide.stats.raceConditionStats.dryFast.earnings.toLocaleString()}</td>
+                                    <td>{TestRide.stats.raceConditionStats.dryFast.bestBeyerSpeed}</td>
                                 </tr>
                                 <tr>
-                                    <td>Wet({TestRide.stats.trackConditionStats.wet.tomlinsonRating})</td>
-                                    <td>{TestRide.stats.trackConditionStats.wet.total}</td>
-                                    <td>{TestRide.stats.trackConditionStats.wet.wins}</td>
-                                    <td>{TestRide.stats.trackConditionStats.wet.place}</td>
-                                    <td>{TestRide.stats.trackConditionStats.wet.show}</td>
-                                    <td>${TestRide.stats.trackConditionStats.wet.earnings.toLocaleString()}</td>
-                                    <td>{TestRide.stats.trackConditionStats.wet.bestBeyerSpeed}</td>
+                                    <td>Wet({TestRide.stats.raceConditionStats.wet.tomlinsonRating})</td>
+                                    <td>{TestRide.stats.raceConditionStats.wet.total}</td>
+                                    <td>{TestRide.stats.raceConditionStats.wet.wins}</td>
+                                    <td>{TestRide.stats.raceConditionStats.wet.place}</td>
+                                    <td>{TestRide.stats.raceConditionStats.wet.show}</td>
+                                    <td>${TestRide.stats.raceConditionStats.wet.earnings.toLocaleString()}</td>
+                                    <td>{TestRide.stats.raceConditionStats.wet.bestBeyerSpeed}</td>
                                 </tr>
                                 <tr>
                                     <td>Synth</td>
-                                    <td>{TestRide.stats.trackConditionStats.synthetic.total}</td>
-                                    <td>{TestRide.stats.trackConditionStats.synthetic.wins}</td>
-                                    <td>{TestRide.stats.trackConditionStats.synthetic.place}</td>
-                                    <td>{TestRide.stats.trackConditionStats.synthetic.show}</td>
-                                    <td>${TestRide.stats.trackConditionStats.synthetic.earnings.toLocaleString()}</td>
-                                    <td>{TestRide.stats.trackConditionStats.synthetic.bestBeyerSpeed}</td>
+                                    <td>{TestRide.stats.raceConditionStats.synthetic.total}</td>
+                                    <td>{TestRide.stats.raceConditionStats.synthetic.wins}</td>
+                                    <td>{TestRide.stats.raceConditionStats.synthetic.place}</td>
+                                    <td>{TestRide.stats.raceConditionStats.synthetic.show}</td>
+                                    <td>${TestRide.stats.raceConditionStats.synthetic.earnings.toLocaleString()}</td>
+                                    <td>{TestRide.stats.raceConditionStats.synthetic.bestBeyerSpeed}</td>
                                 </tr>
                                 <tr>
-                                    <td>Turf({TestRide.stats.trackConditionStats.turf.tomlinsonRating})</td>
-                                    <td>{TestRide.stats.trackConditionStats.turf.total}</td>
-                                    <td>{TestRide.stats.trackConditionStats.turf.wins}</td>
-                                    <td>{TestRide.stats.trackConditionStats.turf.place}</td>
-                                    <td>{TestRide.stats.trackConditionStats.turf.show}</td>
-                                    <td>${TestRide.stats.trackConditionStats.turf.earnings.toLocaleString()}</td>
-                                    <td>{TestRide.stats.trackConditionStats.turf.bestBeyerSpeed}</td>
+                                    <td>Turf({TestRide.stats.raceConditionStats.turf.tomlinsonRating})</td>
+                                    <td>{TestRide.stats.raceConditionStats.turf.total}</td>
+                                    <td>{TestRide.stats.raceConditionStats.turf.wins}</td>
+                                    <td>{TestRide.stats.raceConditionStats.turf.place}</td>
+                                    <td>{TestRide.stats.raceConditionStats.turf.show}</td>
+                                    <td>${TestRide.stats.raceConditionStats.turf.earnings.toLocaleString()}</td>
+                                    <td>{TestRide.stats.raceConditionStats.turf.bestBeyerSpeed}</td>
                                 </tr>
                                 <tr>
-                                    <td>Dst({TestRide.stats.trackConditionStats.distance.tomlinsonRating})</td>
-                                    <td>{TestRide.stats.trackConditionStats.distance.total}</td>
-                                    <td>{TestRide.stats.trackConditionStats.distance.wins}</td>
-                                    <td>{TestRide.stats.trackConditionStats.distance.place}</td>
-                                    <td>{TestRide.stats.trackConditionStats.distance.show}</td>
-                                    <td>${TestRide.stats.trackConditionStats.distance.earnings.toLocaleString()}</td>
-                                    <td>{TestRide.stats.trackConditionStats.distance.bestBeyerSpeed}</td>
+                                    <td>Dst({TestRide.stats.raceConditionStats.distance.tomlinsonRating})</td>
+                                    <td>{TestRide.stats.raceConditionStats.distance.total}</td>
+                                    <td>{TestRide.stats.raceConditionStats.distance.wins}</td>
+                                    <td>{TestRide.stats.raceConditionStats.distance.place}</td>
+                                    <td>{TestRide.stats.raceConditionStats.distance.show}</td>
+                                    <td>${TestRide.stats.raceConditionStats.distance.earnings.toLocaleString()}</td>
+                                    <td>{TestRide.stats.raceConditionStats.distance.bestBeyerSpeed}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -510,16 +533,18 @@ class Horse extends React.Component {
         )
     }
 }
+
+
 const mapStateToProps = (state) => {
     return {
-        help: state.help
+        help: state.help,
+        horse: state.horse
     };
 };
-
 
 const mapDispatchToProps = (dispatch) => ({
     openModal: (type) => dispatch(openModal(type)),
     closeModal: () => dispatch(closeModal())
-})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Horse);

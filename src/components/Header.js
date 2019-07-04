@@ -25,7 +25,7 @@ class Header extends React.Component {
         }
         window.addEventListener('scroll', handleScroll);
         window.addEventListener('keypress', (key) => {
-            key.key === 'h' && this.props.help.hoverHelp == 'enabled' ? this.props.dispatch(disableHelp()) : this.props.dispatch(enableHelp()); // pressing lowercase 's' toggles the hover help feature
+            key.key === 'H' && this.props.help.hoverHelp == 'enabled' ? this.props.dispatch(disableHelp()) : this.props.dispatch(enableHelp()); // pressing lowercase 's' toggles the hover help feature
             let scrollTo = document.getElementById(key.key); // pressing race gate number will look for any associated anchors - if they exist it scrolls into center of the screen
             if(scrollTo){
                 scrollTo.scrollIntoView({ behavior: 'smooth', block: 'center' });

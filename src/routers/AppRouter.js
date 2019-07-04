@@ -3,17 +3,18 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import NotFoundPage from '../components/NotFoundPage';
 import Header from '../components/Header';
 import Horse from '../components/Horse';
-import Horse2 from '../components/Horse - Copy';
-import HelpModal from '../components/HelpModal'
+import AllHorse from '../components/AllHorse';
+import HelpModal from '../components/HelpModal';
+// import PdfGrabber from '../components/PdfGrabber';
 import { HashLink as Link } from 'react-router-hash-link';
-
 
 
 const AppRouter = () => (
     <BrowserRouter>
         <Header />
         <Switch>
-            <Route path='/' component={Horse} exact={true} />
+            <Route path='/' component={AllHorse} exact={true} />
+            <Route path='/horse/:id' component={Horse} exact={true} />
             <Route path='/header' component={Header} />
             <Route component={NotFoundPage} />
         </Switch>
