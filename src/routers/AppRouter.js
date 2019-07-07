@@ -4,6 +4,7 @@ import NotFoundPage from '../components/NotFoundPage';
 import Header from '../components/Header';
 import Horse from '../components/Horse';
 import AllHorse from '../components/AllHorse';
+import AddHorse from '../components/AddHorse';
 import HelpModal from '../components/HelpModal';
 // import PdfGrabber from '../components/PdfGrabber';
 import { HashLink as Link } from 'react-router-hash-link';
@@ -14,7 +15,7 @@ const AppRouter = () => (
         <Header />
         <Switch>
             <Route path='/' component={AllHorse} exact={true} />
-            <Route path='/horse/:id' component={Horse} exact={true} />
+            <Route path='/horse/add' component={AddHorse} exact={true} />
             <Route path='/header' component={Header} />
             <Route component={NotFoundPage} />
         </Switch>

@@ -353,7 +353,7 @@ const raceTrackCodeConversion = {
 
 class Horse extends React.Component {
     constructor(props) {
-        super(props);
+        super();
         this.state = {
             timer: true,
             targetLeft: null,
@@ -408,6 +408,9 @@ class Horse extends React.Component {
             }
         });
     }
+    removeHorse = () => {
+        this.props.removeHorse(this.state.horseId);
+    }
     render() {
         return (
             <div >
@@ -419,7 +422,11 @@ class Horse extends React.Component {
                             <p className='odds'>15-1</p>
                         </div>
                         <div className='horseInfo'>
-                            <p className='horseName'>{TestRide.name}</p>
+                        <div>
+                        <p style={{display:'inline'}} className='horseName'>{TestRide.name}</p>
+                        <button style={{marginLeft:'1.5vw',display:'inline'}} onClick={()=> {console.log('This will eventually edit the horse',this.state.horseId)}}>Edit Horse</button>
+                        <button style={{marginLeft:'1.5vw',display:'inline'}} onClick={this.removeHorse}>Remove Horse</button>
+                        </div>    
                             <h4>Own: {TestRide.owner}</h4>
                             <p>{TestRide.silks.description}</p>
                         </div>
@@ -544,7 +551,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
     openModal: (type) => dispatch(openModal(type)),
-    closeModal: () => dispatch(closeModal())
+    closeModal: () => dispatch(closeModal()),
+    removeHorse: (id) => dispatch(removeHorse(id))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Horse);

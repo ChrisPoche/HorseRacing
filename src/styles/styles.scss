@@ -1,6 +1,8 @@
 @import './base/settings';
 @import './base/base';
 @import './components/modal';
+
+
 *{
     margin: 0;
     margin-bottom: 3px;
@@ -12,9 +14,16 @@ body {
     margin: 0 0 0 20px;
     width: 98vw;
 }
+.errors {
+    color: red;
+    font-weight: bold;
+}
 .stats {
     display: flex;
     width: 97vw;
+}
+.statsForm {
+    height: 150px;
 }
 .fixedHeader {
     position: fixed;
@@ -52,6 +61,7 @@ hr {
     display: flex;
     flex-direction: column;
     order: 2;
+    margin-left: .5vw;
 }
 .horseName {
     font-size: $l-size;
@@ -108,3 +118,5 @@ td:first-of-type {
 .conditions > tbody > tr > td {
     padding: .23rem 5px;
 }
+
+@import './components/horse';

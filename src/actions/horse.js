@@ -14,7 +14,7 @@ export const addHorse = (horse) => ({
     }
 });
 
-export const removeHorse = ({ id } = {}) => ({
+export const removeHorse = ( id ) => ({
     type: 'REMOVE_HORSE',
     id
 });

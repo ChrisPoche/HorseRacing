@@ -7,7 +7,7 @@ const horseReducer = (state = horseReducerDefaultState, action) => {
                 action.horse
             ];
         case 'REMOVE_HORSE':
-            return state.filter(({ id }) => action.id !== id);
+            return state.filter(({ id }) => id !== action.id );
         case 'EDIT_HORSE':
             return state.map((horse) => {
                 if (horse.id === action.id) {
