@@ -49,7 +49,7 @@ export default class AddHorse extends React.PureComponent {
         // }
     }
     checkExpand = (item) => {
-        console.log('ITEM',item);
+        console.log('ITEM', item);
         if (item.value.length > 0) {
             let len = 1.2 + ((item.value.length - 2) * .5);
             document.getElementById(item.id).style.width = `${len}vw`;
@@ -81,13 +81,13 @@ export default class AddHorse extends React.PureComponent {
                     this.state.jockeyMeetPlaces.set,
                     this.state.jockeyMeetShows.set
                 ];
-                var total = this.state.jockeyMeetWins.num+this.state.jockeyMeetPlaces.num+this.state.jockeyMeetShows.num;
+                var total = this.state.jockeyMeetWins.num + this.state.jockeyMeetPlaces.num + this.state.jockeyMeetShows.num;
                 if (setArray.every(set => set === true)) {
-                    if(isNaN(parseInt(item.value))) {this.setState(prevState => ({ error: 'Your total race value cannot be left blank', jockeyMeetTotal: {num: total ,...prevState.jockeyMeetTotal}})); document.getElementById(item.id).value = total;}
-                    else if((parseInt(item.value) < (total))) {this.setState({ error: 'You cannot have less total races than the pre-set win, place, and show results', jockeyMeetTotal: {num: total, set: false} }); document.getElementById(item.id).value = total;}
-                    this.focusOut(item); 
+                    if (isNaN(parseInt(item.value))) { this.setState(prevState => ({ error: 'Your total race value cannot be left blank', jockeyMeetTotal: { num: total, ...prevState.jockeyMeetTotal } })); document.getElementById(item.id).value = total; }
+                    else if ((parseInt(item.value) < (total))) { this.setState({ error: 'You cannot have less total races than the pre-set win, place, and show results', jockeyMeetTotal: { num: total, set: false } }); document.getElementById(item.id).value = total; }
+                    this.focusOut(item);
                     let itemSkip = { skip: true, id: 'jockeyMeetTotal', value: document.getElementById('jockeyMeetTotal').value };
-                    console.log('ITEM SKIP',itemSkip)
+                    console.log('ITEM SKIP', itemSkip)
                     this.checkExpand(itemSkip);
                 }
                 else if (item.value.length > 0) this.setState({ jockeyMeetTotal: { num: parseInt(item.value), set: true } });
@@ -125,13 +125,14 @@ export default class AddHorse extends React.PureComponent {
                 if (!this.state.jockeyMeetTotal.set) {
                     this.setState(prevState => ({ jockeyMeetWins: { num: numArray[0], set: numArray[0] === null ? false : true }, jockeyMeetTotal: { ...prevState.jockeyMeetTotal, num: total } }));
                     document.getElementById('jockeyMeetTotal').value = total;
-                    this.focusOut(item);
-                    let itemSkip = { skip: true, id: 'jockeyMeetTotal', value: document.getElementById('jockeyMeetTotal').value };
-                    this.checkExpand(itemSkip);
                 }
                 else if (item.value.length > 0 && this.state.jockeyMeetTotal.set) {
-
-
+                    if (this.state.jockeyMeetTotal.num - total < 0) {
+                        this.setState({ error: 'Maximum win results cannot exceed race totals', jockeyMeetWins: {num: this.state.jockeyMeetTotal.num - (total - parseInt(item.value)), set: true} });
+                        document.getElementById(item.id).value = this.state.jockeyMeetTotal.num - (total - parseInt(item.value));
+                    }
+                    let itemSkip = { skip: true, id: 'jockeyMeetTotal', value: document.getElementById('jockeyMeetTotal').value };
+                    this.checkExpand(itemSkip);
                 }
 
                 //     if (this.state.jockeyMeetPlacesSet && this.state.jockeyMeetShowsSet)
@@ -160,7 +161,6 @@ export default class AddHorse extends React.PureComponent {
                 //             }
                 //         }
                 //     if (item.value.length > 0) this.setState({ jockeyMeetWins: item.value, jockeyMeetWinsSet: true });
-                //     this.focusOut(item);
                 //     let itemSkip = { skip: true, id: 'jockeyMeetTotal', value: document.getElementById('jockeyMeetTotal').value };
                 //     this.checkExpand(itemSkip);
             });
@@ -182,12 +182,14 @@ export default class AddHorse extends React.PureComponent {
                 if (!this.state.jockeyMeetTotal.set) {
                     this.setState(prevState => ({ jockeyMeetPlaces: { num: numArray[1], set: numArray[1] === null ? false : true }, jockeyMeetTotal: { ...prevState.jockeyMeetTotal, num: total } }));
                     document.getElementById('jockeyMeetTotal').value = total;
-                    this.focusOut(item);
+                }
+                else if (item.value.length > 0 && this.state.jockeyMeetTotal.set) {
+                    if (this.state.jockeyMeetTotal.num - total < 0) {
+                        this.setState({ error: 'Maximum place results cannot exceed race totals', jockeyMeetPlaces: {num: this.state.jockeyMeetTotal.num - (total - parseInt(item.value)), set: true} });
+                        document.getElementById(item.id).value = this.state.jockeyMeetTotal.num - (total - parseInt(item.value));
+                    }
                     let itemSkip = { skip: true, id: 'jockeyMeetTotal', value: document.getElementById('jockeyMeetTotal').value };
                     this.checkExpand(itemSkip);
-                }
-                if (item.value.length > 0 && this.state.jockeyMeetTotal.set) {
-
                 }
                 // if (item.value > this.state.jockeyMeetTotal - this.state.jockeyMeetWins - this.state.jockeyMeetShows) {
                 //     if (!this.state.jockeyMeetTotalSet) {
@@ -208,7 +210,6 @@ export default class AddHorse extends React.PureComponent {
                 //     }
                 // }
                 // if (item.value.length > 0) this.setState({ jockeyMeetPlaces: item.value, jockeyMeetPlacesSet: true });
-                // this.focusOut(item);
                 // let itemSkip = { skip: true, id: 'jockeyMeetTotal', value: document.getElementById('jockeyMeetTotal').value };
                 // this.checkExpand(itemSkip);
             })
@@ -230,12 +231,14 @@ export default class AddHorse extends React.PureComponent {
                 if (!this.state.jockeyMeetTotal.set) {
                     this.setState(prevState => ({ jockeyMeetShows: { num: numArray[2], set: numArray[2] === null ? false : true }, jockeyMeetTotal: { ...prevState.jockeyMeetTotal, num: total } }));
                     document.getElementById('jockeyMeetTotal').value = total;
-                    this.focusOut(item);
+                }
+                else if (item.value.length > 0 && this.state.jockeyMeetTotal.set) {
+                    if (this.state.jockeyMeetTotal.num - total < 0) {
+                        this.setState({ error: 'Maximum show results cannot exceed race totals', jockeyMeetPlaces: {num: this.state.jockeyMeetTotal.num - (total - parseInt(item.value)), set: true} });
+                        document.getElementById(item.id).value = this.state.jockeyMeetTotal.num - (total - parseInt(item.value));
+                    }
                     let itemSkip = { skip: true, id: 'jockeyMeetTotal', value: document.getElementById('jockeyMeetTotal').value };
                     this.checkExpand(itemSkip);
-                }
-                if (item.value.length > 0 && this.state.jockeyMeetTotal.set) {
-
 
                 }
                 // if (item.value > this.state.jockeyMeetTotal - this.state.jockeyMeetPlaces - this.state.jockeyMeetWins) {
